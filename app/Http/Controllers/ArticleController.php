@@ -9,6 +9,7 @@ class ArticleController extends Controller
 {
     /*
     * get all articles for home page
+    * article_author sorting
     */
     public function articles(){
         $data = Article::sortable()->orderBy('article_author', 'asc')->paginate(10);
