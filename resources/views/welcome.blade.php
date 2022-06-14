@@ -82,6 +82,6 @@
             @endforeach
             </tr>
         </table>
-        {!! $articles->appends(request()->input())->links(); !!}
+        <div class="d-flex justify-content-center">{!! $articles->appends(request()->input())->links(); !!}</div>
     </body>
 </html>
