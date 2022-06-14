@@ -8,6 +8,7 @@ If you start looking for my test work, you should complete some required command
 Short project description:
  - PHP 7.2.24
  - Laravel 6.x + blade
+ - Bootstrap 5.1.3
  - mysql(migrations)
  - Console command for INSERT and UPDATE data from blog
  - GoutteServiceProvider for web parsing
