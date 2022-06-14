@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App;
+use App\Article;
 use Goutte;
 use Carbon\Carbon;
 
@@ -40,6 +40,8 @@ class InsertArticles extends Command
      */
     public function handle()
     {
+        $final = [];
+
         for($i=1;$i<1000000000;$i++){
             $crawler = Goutte::request('GET', 'https://laravel-news.com/category/news?page='.$i);
 
@@ -61,16 +63,46 @@ class InsertArticles extends Command
                                         ->eq(0)
                                         ->filter('a')
                                         ->each(function ($a) {
-                                            $tagArr = array();
-                                            $tagArr[] = $a->text();
-
-                                            return $tagArr;
-                                        });                                                
+                                            return $t[] = $a->text();
+                                        });  
+                                        
+                        $tagFinal = $this->makeTags($tags); 
+                        
+                        $final[] = array(
+                            'article_title'  => $title,
+                            'article_date'   => $date,
+                            'article_url'    => $url,
+                            'article_author' => $author,
+                            'article_tags'   => $tagFinal
+                        );
                     } else {
                         exit;
                     }
                 }
-            });
+
+                if(count($final) > 0 ){
+                    $articleModel = Article::insert($final);
+
+                    if($articleModel){
+                        dump("Success");
+                    }
+                }
+            });       
+                 
         }
+
+       
+    }
+
+    private function makeTags($tags){
+        $str = "";
+
+        if(count($tags) > 0){
+            foreach($tags as $t){
+                $str .= $t.',';
+            }
+        }
+
+        return substr_replace($str, "", -1);
     }
 }

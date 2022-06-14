@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App;
+use App\Article;
 
 class ArticleController extends Controller
 {
-    public function setArticle(){
-        $crawler = Goutte::request('GET', 'https://laravel-news.com/category/news');
+    /*
+    * get all articles for home page
+    */
+    public function articles(){
+        $data = Article::sortable()->orderBy('article_author', 'asc')->paginate(10);
 
-        $crawler->filter('main ul li')->each(function ($node) {
-            dump($node);
-            
-        });
+        return view('welcome', ['articles' => $data]);
     }
 }
