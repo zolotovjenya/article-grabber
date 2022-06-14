@@ -21,7 +21,7 @@ class InsertArticles extends Command
      *
      * @var string
      */
-    protected $description = 'Parsed https://laravel-news.com/blog and insert to DB';
+    protected $description = 'Module for parsing https://laravel-news.com/blog and insert to DB';
 
     /**
      * Create a new command instance.
