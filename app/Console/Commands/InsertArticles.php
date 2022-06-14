@@ -48,10 +48,24 @@ class InsertArticles extends Command
                     $date = strtotime($node->filter('a p')->eq(0)->text());
                     
                     if($date > Carbon::now()->subMonths(4)->timestamp){
-                        $article = Goutte::request('GET', 'https://laravel-news.com'.$node->attr('href'));
+                        $url = 'https://laravel-news.com'.$node->attr('href');
+
+                        $article = Goutte::request('GET', $url);
 
                         $title = $article->filter('main h1')->text();
-                        dump($title);    
+                        $author = $article->filter('article p[itemprop="author"] a')->text();
+
+                       
+                        $tags = $article->filter('article p:contains("Filed in:")')
+                                        ->nextAll('div')
+                                        ->eq(0)
+                                        ->filter('a')
+                                        ->each(function ($a) {
+                                            $tagArr = array();
+                                            $tagArr[] = $a->text();
+
+                                            return $tagArr;
+                                        });                                                
                     } else {
                         exit;
                     }
