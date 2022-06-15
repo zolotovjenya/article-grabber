@@ -1,3 +1,5 @@
+Work project - https://test.studdix.com/
+
 If you start looking for my test work, you should complete some required command
 1) Open github project address - https://github.com/zolotovjenya/unitedcode
 2) Create DB and write DB name, user, pass in .env file
