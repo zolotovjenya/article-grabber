@@ -10,6 +10,10 @@ class GoutteParams{
         return 'a p';
     }
 
+    static public function getArticleDate(){
+        return 'main div p';
+    }
+
     static public function getTitle(){
         return 'main h1';
     }
