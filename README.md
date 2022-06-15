@@ -5,7 +5,7 @@ If you start looking for my test work, you should complete some required command
 2) Create DB and write DB name, user, pass in .env file
 3) Complete in console "php artisan migrate" - this command from /database/migrations/2022_06_14_141552_articles.php and create "articles" table in DB
 4) Complete in console "php artisan insert:articles" - INSERT data to articles table in DB
-5) (NOT REQUIRED!!!)If you want to UPDATE data in DB run "php artisan update:articles"
+5) (NOT REQUIRED!!!)If you want to UPDATE data in DB, run "php artisan update:articles"
 
 Short project description:
  - PHP 7.2.24
