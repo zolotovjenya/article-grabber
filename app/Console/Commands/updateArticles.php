@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Article;
+use App\Models\Article;
 use Goutte;
 use Carbon\Carbon;
+use App\Custom\Helper;
+use App\Custom\GoutteParams;
 
 class updateArticles extends Command
 {
@@ -41,41 +43,64 @@ class updateArticles extends Command
     public function handle()
     {
         $articles = Article::all();
+        $final = [];
 
         if(!empty($articles)){
             foreach($articles as $a){
-                $article = Goutte::request('GET', $a->article_url);
+                $article = Goutte::request('GET', config('general.parsingDomain').$a->article_url);
 
-                /*if($article){
-                    $title = $article->filter('main h1')->text();
-                    $author = $article->filter('article p[itemprop="author"] a')->text();
-
+                try{
+                    $title = $article->filter(GoutteParams::getTitle())->text();
+                    $author = $article->filter(GoutteParams::getAuthor())->text();
+                    $date = strtotime($article->filter(GoutteParams::getDate())->text());
                     
-                    $tags = $article->filter('article p:contains("Filed in:")')
-                                    ->nextAll('div')
-                                    ->eq(0)
-                                    ->filter('a')
-                                    ->each(function ($a) {
-                                        return $t[] = $a->text();
-                                    });  
+                    $tags = $article->filter(GoutteParams::getTags())->nextAll('div')->eq(0)->filter('a')->each(function ($a) {
+                        return $t[] = $a->text();
+                    });  
                                     
-                    $tagFinal = $this->makeTags($tags); 
-                    
-                    $final[] = array(
-                        'article_title'  => $title,
-                        'article_date'   => $date,
-                        'article_url'    => $url,
-                        'article_author' => $author,
-                        'article_tags'   => $tagFinal
-                    );
-                }*/
-            }
+                    $tagFinal = Helper::makeTags($tags); 
 
-            $articleModel = Article::update($final);
+                    $updatedField = $this->getUpdatedFields($a, $title, $author, $tagFinal, $date);                    
 
-            if($articleModel){
-                dump("Success");
+                    if(!empty($updatedField) > 0){
+                        $articleModel = Article::where('article_id', $a->article_id)
+                                                ->update($updatedField);
+
+                        if($articleModel){
+                            dump(trans('news.successfullyUpdated'));
+                        }
+                    } else {
+                        dump(trans('news.nothingUpdate'));
+                    }
+                } catch(Exception $e) {
+                    /* 
+                    You will see in console if url already not exists
+                    */
+                    dump(trans('news.urlNotExists', ['url' => $a->article_url]));
+                }
             }
         }
+    }
+
+    private function getUpdatedFields($a, $title, $author, $tagFinal, $date){
+        $data = [];
+
+        if($a->article_title != $title){
+            $data['article_title'] = $title;
+        }
+
+        if($a->article_author != $author){
+            $data['article_author'] = $author;
+        }
+
+        if($a->article_tags != $tagFinal){
+            $data['article_tags'] = $tagFinal;
+        }
+
+        if($a->article_date != $date){
+            $data['article_date'] = $date;
+        }
+
+        return $data;
     }
 }

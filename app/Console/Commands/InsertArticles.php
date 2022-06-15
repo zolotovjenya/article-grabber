@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Article;
+use App\Models\Article;
 use Goutte;
 use Carbon\Carbon;
+use App\Custom\Helper;
+use App\Custom\GoutteParams;
 
 class InsertArticles extends Command
 {
@@ -43,38 +45,36 @@ class InsertArticles extends Command
         $final = [];
 
         for($i=1;$i<1000000000;$i++){
-            $crawler = Goutte::request('GET', 'https://laravel-news.com/category/news?page='.$i);
+            $crawler = Goutte::request('GET', config('general.parsingDomain').'/category/news?page='.$i);
 
-            $crawler->filter('main ul li.group-link-underline a')->each(function ($node) {
+            $crawler->filter(GoutteParams::getAllNews())->each(function ($node) {
                 if(isset($node) && !empty($node)){                
-                    $date = strtotime($node->filter('a p')->eq(0)->text());
+                    $date = strtotime($node->filter(GoutteParams::getDate())->eq(0)->text());
                     
                     if($date > Carbon::now()->subMonths(4)->timestamp){
-                        $url = 'https://laravel-news.com'.$node->attr('href');
+                        $url = config('general.parsingDomain').$node->attr('href');
 
                         $article = Goutte::request('GET', $url);
 
-                        $title = $article->filter('main h1')->text();
-                        $author = $article->filter('article p[itemprop="author"] a')->text();
+                        $title = $article->filter(GoutteParams::getTitle())->text();
+                        $author = $article->filter(GoutteParams::getAuthor())->text();
 
                        
-                        $tags = $article->filter('article p:contains("Filed in:")')
-                                        ->nextAll('div')
-                                        ->eq(0)
-                                        ->filter('a')
-                                        ->each(function ($a) {
-                                            return $t[] = $a->text();
-                                        });  
+                        $tags = $article->filter(GoutteParams::getTags())->nextAll('div')->eq(0)->filter('a')->each(function ($a) {
+                            return $t[] = $a->text();
+                        });  
                                         
-                        $tagFinal = $this->makeTags($tags); 
-                        
-                        $final[] = array(
-                            'article_title'  => $title,
-                            'article_date'   => $date,
-                            'article_url'    => $url,
-                            'article_author' => $author,
-                            'article_tags'   => $tagFinal
-                        );
+                        $tagFinal = Helper::makeTags($tags); 
+
+                        if(!empty($title) && !empty($date) && !empty($node->attr('href')) && !empty($author) && !empty($tagFinal)){                        
+                            $final[] = array(
+                                'article_title'  => $title,
+                                'article_date'   => $date,
+                                'article_url'    => $node->attr('href'),
+                                'article_author' => $author,
+                                'article_tags'   => $tagFinal
+                            );
+                        }
                     } else {
                         exit;
                     }
@@ -84,25 +84,11 @@ class InsertArticles extends Command
                     $articleModel = Article::insert($final);
 
                     if($articleModel){
-                        dump("Success");
+                        dump(trans('news.successfullyAdded'));
                     }
                 }
             });       
                  
         }
-
-       
-    }
-
-    private function makeTags($tags){
-        $str = "";
-
-        if(count($tags) > 0){
-            foreach($tags as $t){
-                $str .= $t.',';
-            }
-        }
-
-        return substr_replace($str, "", -1);
     }
 }
