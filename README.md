@@ -1,7 +1,8 @@
 Work project - https://test.studdix.com/
 
 If you start looking for my test work, you should complete some required command
-1) Open github project address - https://github.com/zolotovjenya/unitedcode
+1) Open github project address - https://github.com/zolotovjenya/unitedcode and
+and you can clone this project on your server with command "git clone https://github.com/zolotovjenya/unitedcode.git"
 2) Create DB and write DB name, user, pass in .env file
 3) Complete in console "php artisan migrate". 
 Migration file "/database/migrations/2022_06_14_141552_articles.php" will create "articles" table in DB.
