@@ -52,7 +52,7 @@ class updateArticles extends Command
                 try{
                     $title = $article->filter(GoutteParams::getTitle())->text();
                     $author = $article->filter(GoutteParams::getAuthor())->text();
-                    $date = strtotime($article->filter(GoutteParams::getDate())->text());
+                    $date = strtotime($article->filter(GoutteParams::getArticleDate())->text());
                     
                     $tags = $article->filter(GoutteParams::getTags())->nextAll('div')->eq(0)->filter('a')->each(function ($a) {
                         return $t[] = $a->text();
