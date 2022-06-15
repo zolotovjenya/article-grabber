@@ -12,5 +12,8 @@ return [
     */
 
     'news' => 'News',
-
+    'successfullyAdded' => 'Successfully added',
+    'successfullyUpdated' => 'Successfully updated',
+    'nothingUpdate' => 'Nothing to update',
+    'urlNotExists' => 'The url :url is not exists!'
 ];
