@@ -75,7 +75,7 @@
             @foreach($articles as $a)
             <tr>                        
                 <td>{{$a->date_format}}</td>
-                <td><a href="{{$a->article_url}}" target="_blank">{{$a->article_title}}</a></td>
+                <td><a href="{{config('general.parsingDomain').$a->article_url}}" target="_blank">{{$a->article_title}}</a></td>
                 <td>{{$a->article_author}}</td>
                 <td>{{$a->article_tags}}</td>
             </tr>
