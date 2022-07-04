@@ -1,6 +1,4 @@
-Work project - https://test.studdix.com/
-
-If you start looking for my test work, you should complete some required command
+If you start looking for this work, you should complete some required command
 1) Open github project address - https://github.com/zolotovjenya/unitedcode and you can clone this project to your server with command "git clone https://github.com/zolotovjenya/unitedcode.git"
 2) Create DB and write DB name, user, pass in .env file
 3) Complete in console "php artisan migrate". 
