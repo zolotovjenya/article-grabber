@@ -1,5 +1,5 @@
 If you start looking for this work, you should complete some required command
-1) Open github project address - https://github.com/zolotovjenya/unitedcode and you can clone this project to your server with command "git clone https://github.com/zolotovjenya/unitedcode.git"
+1) Clone github project
 2) Create DB and write DB name, user, pass in .env file
 3) Complete in console "php artisan migrate". 
 Migration file "/database/migrations/2022_06_14_141552_articles.php" will create "articles" table in DB.
